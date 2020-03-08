@@ -1,0 +1,40 @@
+@import url("https://fonts.googleapis.com/css?family=Fondamento&display=swap");
+
+body {
+  background: url("https://winteriscoming.net/files/2017/11/lordoftherings-ring-map.jpg");
+}
+
+.main-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+header {
+  align-self: center;
+}
+
+h1 {
+  display: inline-block;
+  font-family: "Fondamento", cursive;
+  color: #fff;
+  background: #000;
+  padding: 20px 30px;
+  border-radius: 20px;
+}
+
+.quoteSection {
+  align-self: center;
+  text-align: center;
+  background: #c89b5e;
+  font-family: "Fondamento", cursive;
+  color: #fff;
+  padding: 20px 30px;
+  border-radius: 20px;
+}
+
+.randomise-btn {
+  margin-top: 20px;
+  align-self: center;
+}
