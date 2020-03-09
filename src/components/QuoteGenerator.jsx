@@ -13,7 +13,6 @@ class QuoteGenerator extends Component {
   render() {
     const { quoteData } = this.state;
     const { characterData } = this.state;
-    console.log(this.state.randomNum);
 
     return (
       <>
@@ -21,11 +20,13 @@ class QuoteGenerator extends Component {
           <>
             <section className="quoteSection">
               <h2 className="quote">
-                {quoteData[this.randomiseQuote()].dialog}
+                {quoteData[this.state.randomNum].dialog}
               </h2>
-              <p className="quotedBy">-- {this.fetchCharacterById()}</p>
+              <p className="quotedBy">-- {characterData}</p>
             </section>
-            <button className="randomise-btn">Randomise</button>
+            <button className="randomise-btn" onClick={this.handleRandomise}>
+              Randomise
+            </button>
           </>
         )}
       </>
@@ -46,28 +47,31 @@ class QuoteGenerator extends Component {
           const randomNum = Math.floor(
             Math.random() * currentState.quoteData.length - 1
           );
-          return { randomNum, isLoaded: true };
+          return { randomNum };
         });
       });
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.randomNum !== this.state.randomNum) {
+      this.fetchCharacterById();
+    }
+  }
 
   fetchCharacterById = () => {
     const { quoteData, randomNum } = this.state;
     API.get(`/character/${quoteData[randomNum].character}`).then(
       ({ data: { name } }) => {
-        this.setState({ characterData: name });
+        this.setState({ characterData: name, isLoaded: true });
       }
     );
   };
 
-  randomiseQuote = () => {
+  handleRandomise = () => {
     const { quoteData } = this.state;
     const randomNum = Math.floor(Math.random() * quoteData.length - 1);
-    // this.fetchCharacterById(quoteData[randomNum].character);
-    //set state with randomNum?
-    return randomNum;
+    this.setState({ randomNum });
   };
-  // }
 }
 
 export default QuoteGenerator;
