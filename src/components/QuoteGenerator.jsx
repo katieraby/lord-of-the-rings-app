@@ -5,7 +5,6 @@ class QuoteGenerator extends Component {
   state = {
     quoteData: [],
     characterData: "",
-    // { _id: "5cd99d4bde30eff6ebccfc38", name: "Bilbo Baggins" },
     isLoaded: false,
     randomNum: 0
   };
@@ -62,6 +61,9 @@ class QuoteGenerator extends Component {
     const { quoteData, randomNum } = this.state;
     API.get(`/character/${quoteData[randomNum].character}`).then(
       ({ data: { name } }) => {
+        if (name === "MINOR_CHARACTER") {
+          name = "Unknown";
+        }
         this.setState({ characterData: name, isLoaded: true });
       }
     );
