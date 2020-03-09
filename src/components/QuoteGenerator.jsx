@@ -4,13 +4,16 @@ import API from "../API";
 class QuoteGenerator extends Component {
   state = {
     quoteData: [],
-    characterData: { _id: "5cd99d4bde30eff6ebccfc38", name: "Bilbo Baggins" },
-    isLoaded: false
+    characterData: "",
+    // { _id: "5cd99d4bde30eff6ebccfc38", name: "Bilbo Baggins" },
+    isLoaded: false,
+    randomNum: 0
   };
 
   render() {
     const { quoteData } = this.state;
     const { characterData } = this.state;
+    console.log(this.state.randomNum);
 
     return (
       <>
@@ -20,7 +23,7 @@ class QuoteGenerator extends Component {
               <h2 className="quote">
                 {quoteData[this.randomiseQuote()].dialog}
               </h2>
-              <p className="quotedBy">-- {characterData.name}</p>
+              <p className="quotedBy">-- {this.fetchCharacterById()}</p>
             </section>
             <button className="randomise-btn">Randomise</button>
           </>
@@ -34,25 +37,37 @@ class QuoteGenerator extends Component {
   }
 
   fetchQuoteDataOnMount = () => {
-    API.get("/quote").then(({ data: { docs } }) => {
-      this.setState({ quoteData: docs, isLoaded: true });
-    });
+    API.get("/quote")
+      .then(({ data: { docs } }) => {
+        this.setState({ quoteData: docs });
+      })
+      .then(() => {
+        this.setState(currentState => {
+          const randomNum = Math.floor(
+            Math.random() * currentState.quoteData.length - 1
+          );
+          return { randomNum, isLoaded: true };
+        });
+      });
   };
 
-  fetchCharacterById = id => {
-    API.get(`/character/${id}`).then(({ data }) => {
-      console.log(data);
-      this.setState({ isLoaded: true });
-    });
+  fetchCharacterById = () => {
+    const { quoteData, randomNum } = this.state;
+    API.get(`/character/${quoteData[randomNum].character}`).then(
+      ({ data: { name } }) => {
+        this.setState({ characterData: name });
+      }
+    );
   };
 
   randomiseQuote = () => {
     const { quoteData } = this.state;
     const randomNum = Math.floor(Math.random() * quoteData.length - 1);
-    console.log(quoteData);
-    this.fetchCharacterById(quoteData[randomNum]._id);
+    // this.fetchCharacterById(quoteData[randomNum].character);
+    //set state with randomNum?
     return randomNum;
   };
+  // }
 }
 
 export default QuoteGenerator;
